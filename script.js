@@ -1,66 +1,70 @@
-let operacaoSelecionada = "";
-let valorAnterior = "";
-let valorAtual = "";
+let valorAtual = "0"; // Valor atual exibido na tela
+let valorAnterior = null; // Valor armazenado para a operação
+let operacaoSelecionada = null; // Operação selecionada (+, -, *, /)
 
 function digitar(numero) {
-    const tela = document.getElementById("numero1");
-
-    if (!operacaoSelecionada) {
-        valorAnterior += numero;
-        tela.value = valorAnterior;
+    if (valorAtual === "0" || operacaoSelecionada && valorAtual === "") {
+        valorAtual = numero; // Substitui o valor inicial ou após operação
     } else {
-        valorAtual += numero;
-        tela.value = valorAtual;
+        valorAtual += numero; // Adiciona mais números
     }
+    atualizarTela(valorAtual);
 }
 
 function selecionarOperacao(operacao) {
-    if (valorAnterior === "") {
-        alert("Digite um número antes de selecionar a operação.");
-        return;
+    if (valorAtual === "") return;
+
+    if (valorAnterior !== null && operacaoSelecionada) {
+        calcular(); // Calcula a operação anterior antes de continuar
     }
+
     operacaoSelecionada = operacao;
+    valorAnterior = valorAtual;
+    valorAtual = ""; // Prepara para o próximo número
 }
 
 function calcular() {
-    if (valorAnterior === "" || valorAtual === "") {
-        alert("Por favor, complete a operação.");
-        return;
-    }
+    if (!operacaoSelecionada || valorAnterior === null || valorAtual === "") return;
 
     const num1 = parseFloat(valorAnterior);
     const num2 = parseFloat(valorAtual);
-    let resultado;
 
+    let resultado;
     switch (operacaoSelecionada) {
-        case 'soma':
+        case "+":
             resultado = num1 + num2;
             break;
-        case 'subtracao':
+        case "-":
             resultado = num1 - num2;
             break;
-        case 'multiplicacao':
+        case "*":
             resultado = num1 * num2;
             break;
-        case 'divisao':
+        case "/":
             if (num2 === 0) {
                 alert("Não é possível dividir por zero!");
+                limpar();
                 return;
             }
             resultado = num1 / num2;
             break;
         default:
-            alert("Operação inválida.");
             return;
     }
 
-    document.getElementById("numero1").value = resultado;
-    limpar();
+    valorAtual = resultado.toString();
+    valorAnterior = null;
+    operacaoSelecionada = null;
+    atualizarTela(valorAtual);
 }
 
 function limpar() {
-    valorAnterior = "";
-    valorAtual = "";
-    operacaoSelecionada = "";
-    document.getElementById("numero1").value = "0";
+    valorAtual = "0";
+    valorAnterior = null;
+    operacaoSelecionada = null;
+    atualizarTela(valorAtual);
+}
+
+function atualizarTela(valor) {
+    document.getElementById("tela").value = valor;
 }
