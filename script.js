@@ -1,25 +1,37 @@
 let operacaoSelecionada = "";
+let valorAnterior = "";
+let valorAtual = "";
+
+function digitar(numero) {
+    const tela = document.getElementById("numero1");
+
+    if (!operacaoSelecionada) {
+        valorAnterior += numero;
+        tela.value = valorAnterior;
+    } else {
+        valorAtual += numero;
+        tela.value = valorAtual;
+    }
+}
 
 function selecionarOperacao(operacao) {
-    // Guardar a operação selecionada
+    if (valorAnterior === "") {
+        alert("Digite um número antes de selecionar a operação.");
+        return;
+    }
     operacaoSelecionada = operacao;
 }
 
 function calcular() {
-    // Obter os valores dos inputs
-    let num1 = parseFloat(document.getElementById("numero1").value);
-    let num2 = parseFloat(document.getElementById("numero2").value);
-
-    // Verificar se os valores são válidos
-    if (isNaN(num1) || isNaN(num2)) {
-        alert("Por favor, insira números válidos.");
+    if (valorAnterior === "" || valorAtual === "") {
+        alert("Por favor, complete a operação.");
         return;
     }
 
-    // Variável para armazenar o resultado
+    const num1 = parseFloat(valorAnterior);
+    const num2 = parseFloat(valorAtual);
     let resultado;
 
-    // Verificar qual operação foi selecionada
     switch (operacaoSelecionada) {
         case 'soma':
             resultado = num1 + num2;
@@ -38,10 +50,17 @@ function calcular() {
             resultado = num1 / num2;
             break;
         default:
-            alert("Por favor, selecione uma operação.");
+            alert("Operação inválida.");
             return;
     }
 
-    // Exibir o resultado
-    document.getElementById("resultado").textContent = resultado;
+    document.getElementById("numero1").value = resultado;
+    limpar();
+}
+
+function limpar() {
+    valorAnterior = "";
+    valorAtual = "";
+    operacaoSelecionada = "";
+    document.getElementById("numero1").value = "0";
 }
